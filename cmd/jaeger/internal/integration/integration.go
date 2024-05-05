@@ -15,9 +15,10 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zaptest"
 	"gopkg.in/yaml.v3"
 
-	"github.com/jaegertracing/jaeger/pkg/testutils"
 	"github.com/jaegertracing/jaeger/plugin/storage/integration"
 	"github.com/jaegertracing/jaeger/ports"
 )
@@ -43,7 +44,7 @@ type E2EStorageIntegration struct {
 // it also initialize the SpanWriter and SpanReader below.
 // This function should be called before any of the tests start.
 func (s *E2EStorageIntegration) e2eInitialize(t *testing.T) {
-	logger, _ := testutils.NewLogger()
+	logger := zaptest.NewLogger(t, zaptest.Level(zap.DebugLevel))
 	configFile := createStorageCleanerConfig(t, s.ConfigFile)
 	t.Logf("Starting Jaeger-v2 in the background with config file %s", configFile)
 	cmd := exec.Cmd{
